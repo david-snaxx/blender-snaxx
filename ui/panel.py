@@ -1,5 +1,5 @@
 import bpy
-from ..operators import (rename_child_to_match_parent)
+from ..operators import (clean_unused_vertex_groups, rename_child_to_match_parent)
 
 class BS_PT_Panel(bpy.types.Panel):
     bl_idname = "bs.panel"
@@ -11,23 +11,45 @@ class BS_PT_Panel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        self.draw_clean_vertex_groups(context, layout, scene)
+        self.draw_clean_unusued_vertex_groups(context, layout, scene)
         self.draw_rename_child_to_match_parent(context, layout, scene)
 
-    def draw_clean_vertex_groups(self, context, layout, scene):
+    def draw_clean_unusued_vertex_groups(self, context, layout, scene):
         box = layout.box()
-        box.label(text = "Clean vertex groups")
+        box.label(text = "Clean unused vertex groups")
         # options
         col = box.column()
-        col.prop(scene, "bs_require_armature")
         col.prop(scene, "bs_remove_unweighted")
-        col.prop(scene, "bs_force_remove_unassigned_without_armature")
         col.prop(scene, "bs_remove_unassigned")
+        # preview
+        selected_mesh_objects = (clean_unused_vertex_groups
+                           .BS_OT_CleanUnusedVertexGroups
+                           .get_selected_mesh_objects(context))
+        has_armature = set()
+        no_armature = set()
+        for obj in selected_mesh_objects:
+            armature = (clean_unused_vertex_groups
+                        .BS_OT_CleanUnusedVertexGroups
+                        .get_mesh_armature(obj))
+            if armature is not None:
+                has_armature.add(obj)
+            else:
+                no_armature.add(obj)
+        if has_armature:
+            sub = box.box()
+            sub.label(text=f"Found {len(has_armature)} mesh objects with armature:", icon = "CHECKMARK")
+            for obj in has_armature:
+                row = sub.row()
+                row.label(text = obj.name)
+        if no_armature:
+            sub = box.box()
+            sub.label(text=f"Found {len(no_armature)} mesh objects with no armature (operation will skip removing unassigned vertex groups):", icon = "ERROR")
+            for obj in no_armature:
+                row = sub.row()
+                row.label(text = obj.name)
         # runner
-        op = box.operator("bs.clean_vertex_groups", text="Clean vertex groups")
-        op.require_armature = scene.bs_require_armature
+        op = box.operator("bs.clean_unused_vertex_groups", text="Clean unused vertex groups")
         op.remove_unweighted = scene.bs_remove_unweighted
-        op.force_remove_unassigned_without_armature = scene.bs_force_remove_unassigned_without_armature
         op.remove_unassigned = scene.bs_remove_unassigned
 
     def draw_rename_child_to_match_parent(self, context, layout, scene):
