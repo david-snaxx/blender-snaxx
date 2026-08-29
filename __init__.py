@@ -8,14 +8,17 @@ bl_info = {
     "category": "Object"
 }
 
-from .operators import (rename_child_to_match_parent)
+from .operators import (clean_vertex_groups,
+                        rename_child_to_match_parent)
 from .ui import (panel)
 
 def register():
+    clean_vertex_groups.register()
     rename_child_to_match_parent.register()
     panel.register()
 
 def unregister():
+    clean_vertex_groups.unregister()
     rename_child_to_match_parent.unregister()
     panel.unregister()
 

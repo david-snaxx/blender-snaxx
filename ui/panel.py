@@ -11,7 +11,24 @@ class BS_PT_Panel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        self.draw_clean_vertex_groups(context, layout, scene)
         self.draw_rename_child_to_match_parent(context, layout, scene)
+
+    def draw_clean_vertex_groups(self, context, layout, scene):
+        box = layout.box()
+        box.label(text = "Clean vertex groups")
+        # options
+        col = box.column()
+        col.prop(scene, "bs_require_armature")
+        col.prop(scene, "bs_remove_unweighted")
+        col.prop(scene, "bs_force_remove_unassigned_without_armature")
+        col.prop(scene, "bs_remove_unassigned")
+        # runner
+        op = box.operator("bs.clean_vertex_groups", text="Clean vertex groups")
+        op.require_armature = scene.bs_require_armature
+        op.remove_unweighted = scene.bs_remove_unweighted
+        op.force_remove_unassigned_without_armature = scene.bs_force_remove_unassigned_without_armature
+        op.remove_unassigned = scene.bs_remove_unassigned
 
     def draw_rename_child_to_match_parent(self, context, layout, scene):
         box = layout.box()
