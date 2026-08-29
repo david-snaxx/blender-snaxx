@@ -38,80 +38,99 @@ class BS_OT_CleanVertexGroups(bpy.types.Operator):
     )
 
     def execute(self, context):
+        meshes = self.get_selected_mesh_objects(context)
+        for obj in meshes:
+            armature = self.get_mesh_armature(obj)
+
+            if self.require_armature and armature is None:
+                self.report({"WARNING"}, f"{obj.name} has no armature; skipping (Require Armature is enabled)")
+                continue
+
+            check_unweighted_groups = self.remove_unweighted
+            assigned_vertex_groups_indices = set()
+            if check_unweighted_groups:
+                assigned_vertex_groups_indices = self.get_assigned_vertex_group_indices(obj.data) #.data since we know this is a mesh
+
+            check_unassigned_groups, assigned_armature_vertex_groups_indices = self.get_unassigned_check_state(obj, armature)
+
+            # start reversed to avoid shifting index issues when items are removed
+            for vertex_group in reversed(obj.vertex_groups):
+                if self.should_remove_vertex_group(
+                        vertex_group,
+                        check_unweighted_groups, assigned_vertex_groups_indices,
+                        check_unassigned_groups, assigned_armature_vertex_groups_indices,
+                ):
+                    obj.vertex_groups.remove(vertex_group)
+        self.report({'INFO'}, f"Finished cleaning vertex groups")
+        return { 'FINISHED' }
+
+    @staticmethod
+    def get_selected_mesh_objects(context):
         selected = context.selected_objects
         selected_meshes = []
         for obj in selected:
             if obj.type == 'MESH':
                 selected_meshes.append(obj)
-
-        for obj in selected_meshes:
-            mesh = obj.data
-            armature = self.get_mesh_armature(obj)
-
-            if self.require_armature and armature is None:
-                self.report({'WARNING'}, f"'{obj.name}' has no armature; skipping (Require Armature is enabled)")
-                continue
-
-            # reset per object, these indices are only meaningful within
-            # this object's own vertex_groups list, not across objects
-            used_vertex_groups_indices = set()
-            if self.remove_unweighted:
-                for vertex in mesh.vertices:
-                    # find every vertex group that is touched by at least one vertex of the mesh
-                    # an "unused" vertex group has no vertex weight assignments
-                    for assignment in vertex.groups:
-                        used_vertex_groups_indices.add(assignment.group)
-
-            armature_group_indices = set()
-            check_unassigned = self.remove_unassigned
-            if self.remove_unassigned:
-                armature_object = self.get_mesh_armature(obj)
-                if armature_object is None:
-                    if self.force_remove_unassigned_without_armature:
-                        # no bones exist to match against, so every vertex group
-                        # on this mesh counts as unassigned by definition
-                        self.report({'WARNING'}, f"'{obj.name}' has no armature; treating all vertex groups as unassigned")
-                        # armature_group_indices stays empty on purpose
-                    else:
-                        self.report({'WARNING'}, f"'{obj.name}' has no armature; skipping unassigned check")
-                        check_unassigned = False
-                else:
-                    bone_names = armature.data.bones.keys()
-                    for vertex_group in obj.vertex_groups:
-                        if vertex_group.name in bone_names:
-                            armature_group_indices.add(vertex_group.index)
-
-                    for vertex_group in obj.vertex_groups:
-                        if vertex_group.name in bone_names:
-                            armature_group_indices.add(vertex_group.index)
-
-            # start reversed to avoid shifting index issues when items are removed
-            # a group is removed if it fails ANY currently-enabled criterion below
-            for vertex_group in reversed(obj.vertex_groups):
-                should_remove = False
-
-                if self.remove_unweighted:
-                    if vertex_group.index not in used_vertex_groups_indices:
-                        should_remove = True
-
-                if check_unassigned:
-                    if vertex_group.index not in armature_group_indices:
-                        should_remove = True
-
-                if should_remove:
-                    obj.vertex_groups.remove(vertex_group)
-
-        self.report({'INFO'}, f"Finished cleaning vertex groups")
-        return { 'FINISHED' }
+        return selected_meshes
 
     @staticmethod
-    def get_mesh_armature(mesh_object):
-        if mesh_object.parent and mesh_object.parent.type == 'ARMATURE':
-            return mesh_object.parent
-        for modifier in mesh_object.modifiers:
+    def get_mesh_armature(mesh):
+        """Returns the armature of the given mesh, or None if no armature exists"""
+        if mesh.parent and mesh.parent.type == 'ARMATURE':
+            return mesh.parent
+        for modifier in mesh.modifiers:
             if modifier.type == 'ARMATURE' and modifier.object:
                 return modifier.object
         return None
+
+    @staticmethod
+    def get_assigned_vertex_group_indices(mesh):
+        """Returns the indices of a mesh's vertex groups that have at least one vertex assigned in the group"""
+        used_indices = set()
+        for vertex in mesh.vertices:
+            for assignment in vertex.groups:
+                used_indices.add(assignment.group)
+        return used_indices
+
+    @staticmethod
+    def get_armature_bone_assigned_vertex_group_indices(obj, armature):
+        """Returns the indices of a mesh's vertex groups whose name matches a bone on the given armature"""
+        bone_names = armature.data.bones.keys()
+        used_indices = set()
+        for vertex_group in obj.vertex_groups:
+            if vertex_group.name in bone_names:
+                used_indices.add(vertex_group.index)
+        return used_indices
+
+    @staticmethod
+    def should_remove_vertex_group(vertex_group, check_unweighted, assigned_vertex_group_indices, check_unassigned, armature_assigned_vertex_group_indices):
+        if check_unweighted and vertex_group.index not in assigned_vertex_group_indices:
+            return True
+        if check_unassigned and vertex_group.index not in armature_assigned_vertex_group_indices:
+            return True
+        return False
+
+    def get_unassigned_check_state(self, obj, armature):
+        """
+        Decides whether the unassigned (bone-name) check should run for this object,
+        and which vertex group indices count as bone-matched if it does.
+
+        Returns a (check_unassigned, armature_group_indices) tuple.
+        """
+        if not self.remove_unassigned:
+            return False, set()
+
+        if armature is None:
+            if self.force_remove_unassigned_without_armature:
+                # no bones exist to match against, so every vertex group
+                # on this mesh counts as unassigned by definition
+                self.report({'WARNING'}, f"'{obj.name}' has no armature; treating all vertex groups as unassigned")
+                return True, set()
+            else:
+                self.report({'WARNING'}, f"'{obj.name}' has no armature; skipping unassigned check")
+                return False, set()
+
+        return True, self.get_armature_bone_assigned_vertex_group_indices(obj, armature)
 
 def register():
     bpy.types.Scene.bs_require_armature = bpy.props.BoolProperty(
