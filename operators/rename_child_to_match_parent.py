@@ -25,7 +25,7 @@ class BS_OT_RenameChildToMatchParent(bpy.types.Operator):
             self.report({'ERROR'}, "No objects selected")
             return {'FINISHED'}
 
-        parent_child_dict = self.group_selected_by_parent(context)
+        parent_child_dict = self.get_parent_child_grouping(selected)
         valid, conflicting = self.split_parent_child_groups_to_valid_and_conflicting(parent_child_dict)
 
         if (len(valid) == 0 and len(conflicting) == 0):
@@ -34,6 +34,12 @@ class BS_OT_RenameChildToMatchParent(bpy.types.Operator):
         if (len(valid) == 0 and len(conflicting) > 0):
             self.report({'ERROR'}, "No single child-parent pairings found in selection.")
             return {'CANCELLED'}
+
+        for parent, child in valid.items():
+            child.name = f"{self.prefix}{parent.name}{self.suffix}"
+
+        self.report({'INFO'}, f"Successfully renamed {len(valid)} child object")
+        return {'FINISHED'}
 
     @staticmethod
     def get_parent_child_grouping(selected):
