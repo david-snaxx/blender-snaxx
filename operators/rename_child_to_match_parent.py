@@ -70,3 +70,6 @@ def unregister():
     del bpy.types.Scene.bs_prefix
     del bpy.types.Scene.bs_suffix
     bpy.utils.unregister_class(BS_OT_RenameChildToMatchParent)
+
+if __name__ == "__main__":
+    register()

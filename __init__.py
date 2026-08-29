@@ -7,3 +7,14 @@ bl_info = {
     "description": "A collection of blender convenience tools",
     "category": "Object"
 }
+
+from .operators import (rename_child_to_match_parent)
+
+def register():
+    rename_child_to_match_parent.register()
+
+def unregister():
+    rename_child_to_match_parent.unregister()
+
+if __name__ == "__main__":
+    register()
