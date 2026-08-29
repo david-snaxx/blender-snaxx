@@ -35,11 +35,11 @@ class BS_PT_Panel(bpy.types.Panel):
             sub.label(text=f"Found {len(valid)} objects:", icon="CHECKMARK")
             for parent, child in valid.items():
                 row = sub.row()
-                row.label(text=f"{child.name} ...... {scene.bs_prefix}{parent.name}{scene.bs_suffix}")
+                row.label(text=f"{child.name} ...->... {scene.bs_prefix}{parent.name}{scene.bs_suffix}")
 
         if conflicting:
             sub = box.box()
-            sub.label(text=f"Conflicting selections:", icon="ERROR")
+            sub.label(text=f"Conflicting selections (these objects will not be renamed):", icon="ERROR")
             for parent, children in conflicting.items():
                 row = sub.row()
                 entry_text = ""
@@ -51,7 +51,7 @@ class BS_PT_Panel(bpy.types.Panel):
                     parent_label = "(no parent)"
                 else:
                     parent_label = f"{parent.name}"
-                entry_text += f" share parent: {parent_label}"
+                entry_text += f" ...share parent... {parent_label}"
                 row.label(text=entry_text)
         # runner
         op = box.operator("bs.rename_child_to_match_parent", text="Rename child to match parent")
