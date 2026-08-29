@@ -37,18 +37,19 @@ class BS_PT_Panel(bpy.types.Panel):
                 no_armature.add(obj)
         if has_armature:
             sub = box.box()
-            sub.label(text=f"Found {len(has_armature)} mesh objects with armature:", icon = "CHECKMARK")
+            sub.label(text = f"Found {len(has_armature)} mesh objects with armature:", icon = "CHECKMARK")
             for obj in has_armature:
                 row = sub.row()
                 row.label(text = obj.name)
         if no_armature:
             sub = box.box()
-            sub.label(text=f"Found {len(no_armature)} mesh objects with no armature (operation will skip removing unassigned vertex groups):", icon = "ERROR")
+            sub.label(text = f"Found {len(no_armature)} mesh objects with no armature:", icon = "ERROR")
+            sub.label(text = "unassigned clean operation will not run on these objects")
             for obj in no_armature:
                 row = sub.row()
                 row.label(text = obj.name)
         # runner
-        op = box.operator("bs.clean_unused_vertex_groups", text="Clean unused vertex groups")
+        op = box.operator("bs.clean_unused_vertex_groups", text = "Clean unused vertex groups")
         op.remove_unweighted = scene.bs_remove_unweighted
         op.remove_unassigned = scene.bs_remove_unassigned
 
