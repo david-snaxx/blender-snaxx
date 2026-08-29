@@ -1,5 +1,7 @@
 import bpy
-from ..operators import (clean_unused_vertex_groups, rename_child_to_match_parent)
+from ..operators import (clean_unused_vertex_groups,
+                         rename_child_to_match_parent,
+                         round_mesh_vertex_weights)
 
 class BS_PT_Panel(bpy.types.Panel):
     bl_idname = "bs.panel"
@@ -13,6 +15,7 @@ class BS_PT_Panel(bpy.types.Panel):
         scene = context.scene
         self.draw_clean_unusued_vertex_groups(context, layout, scene)
         self.draw_rename_child_to_match_parent(context, layout, scene)
+        self.round_mesh_vertex_weights(context, layout, scene)
 
     def draw_clean_unusued_vertex_groups(self, context, layout, scene):
         box = layout.box()
@@ -98,6 +101,21 @@ class BS_PT_Panel(bpy.types.Panel):
         op.suffix = scene.bs_suffix
         op.prefix = scene.bs_prefix
 
+    def round_mesh_vertex_weights(self, context, layout, scene):
+        box = layout.box()
+        box.label(text="Round mesh vertex weights")
+        # options
+        col = box.column()
+        col.prop(scene, "bs_include_locked_groups")
+        col.prop(scene, "bs_decimal_places")
+        # preview
+        selected_mesh_objects = (round_mesh_vertex_weights
+                                 .BS_OT_RoundMeshVertexWeights
+                                 .get_selected_mesh_objects(context))
+        # runner
+        op = box.operator("bs.round_mesh_vertex_weights", text="Round mesh vertex weights")
+        ob.include_locked_groups = scene.bs_include_locked_groups
+        op.decimal_places = scene.bs_decimal_places
 def register():
     bpy.utils.register_class(BS_PT_Panel)
 

@@ -14,16 +14,28 @@ class BS_OT_RoundMeshVertexWeights(bpy.types.Operator):
         max = 10,
     )
 
+    # noinspection PyTypeHints
+    include_locked_groups : bpy.props.BoolProperty(
+        name = "Include Locked Groups",
+        description = "Quantize weights in locked vertex groups too. When disabled, locked groups keep "
+                      "their current weights and only unlocked groups are adjusted.",
+        default = True,
+    )
+
     def execute(self, context):
         for obj in self.get_selected_mesh_objects(context):
-            locked_vertex_groups = self.store_locked_vertex_groups(obj)
-            self.unlock_locked_vertex_groups(obj)
+            all_indices = self.get_all_vertex_group_indices(obj)
+            locked_indices = self.get_locked_vertex_group_indices(obj)
+            editable_indices = []
+            if self.include_locked_groups:
+                editable_indices = all_indices
+            else:
+                editable_indices = all_indices - locked_indices
 
             for vertex in obj.data.vertices:
-                self.quantize_vertex_weights(vertex)
+                self.quantize_vertex_weights(vertex, editable_indices)
 
-            self.relock_locked_vertex_groups(obj, locked_vertex_groups)
-        return { 'FINISHED' }
+        return {'FINISHED'}
 
     @staticmethod
     def get_selected_mesh_objects(context):
@@ -34,39 +46,48 @@ class BS_OT_RoundMeshVertexWeights(bpy.types.Operator):
         return selected
 
     @staticmethod
-    def store_locked_vertex_groups(obj):
-        locked_vertex_groups = set()
+    def get_locked_vertex_group_indices(obj):
+        locked_vertex_group_indices = set()
         for vertex_group in obj.vertex_groups:
             if vertex_group.lock_weight:
-                locked_vertex_groups.add(vertex_group)
-        return locked_vertex_groups
+                locked_vertex_group_indices.add(vertex_group.index)
+        return locked_vertex_group_indices
 
     @staticmethod
-    def unlock_locked_vertex_groups(obj):
+    def get_all_vertex_group_indices(obj):
+        all_vertex_group_indices = set()
         for vertex_group in obj.vertex_groups:
-            if vertex_group.lock_weight:
-                vertex_group.lock_weight = False
+            all_vertex_group_indices.add(vertex_group.index)
+        return all_vertex_group_indices
 
-    @staticmethod
-    def relock_vertex_groups(obj, locked_vertex_groups):
-        for vertex_group in obj.vertex_groups:
-            vertex_group.lock_weight = True
-
-    @staticmethod
-    def quantize_vertex_weights(self, vertex):
-        """Rewrites one vertex's weights so each is a multiple of 10^-decimal_places, and they sum to exactly 1.0."""
+    def quantize_vertex_weights(self, vertex, editable_group_indices):
         units_per_whole = 10 ** self.decimal_places
 
-        assignments = list(vertex.groups)
-        weight_total = sum(assignment.weight for assignment in assignments)
-        if weight_total <= 0:
+        editable_assignments = []
+        reserved_weight_total = 0.0
+        for assignment in vertex.groups:
+            if assignment.group in editable_group_indices:
+                editable_assignments.append(assignment)
+            else:
+                reserved_weight_total += assignment.weight
+
+        if not editable_assignments:
             return
 
-        # each group's share of this vertex's total weight, summing to 1.0
-        proportions = [assignment.weight / weight_total for assignment in assignments]
-        allocated_units = self.allocate_units_largest_remainder(proportions, units_per_whole)
+        available_units = units_per_whole - round(reserved_weight_total * units_per_whole)
+        if available_units <= 0:
+            for assignment in editable_assignments:
+                assignment.weight = 0.0
+            return
 
-        for assignment, unit_count in zip(assignments, allocated_units):
+        editable_weight_total = sum(a.weight for a in editable_assignments)
+        if editable_weight_total <= 0:
+            return
+
+        proportions = [a.weight / editable_weight_total for a in editable_assignments]
+        allocated_units = self.allocate_units_largest_remainder(proportions, available_units)
+
+        for assignment, unit_count in zip(editable_assignments, allocated_units):
             assignment.weight = round(unit_count / units_per_whole, self.decimal_places)
 
     @staticmethod
@@ -98,16 +119,24 @@ class BS_OT_RoundMeshVertexWeights(bpy.types.Operator):
         return whole_units
 
 def register():
-    bpy.types.Secne.bs_decimal_places = bpy.props.IntProperty(
+    bpy.types.Scene.bs_decimal_places = bpy.props.IntProperty(
         name = "Decimal Places",
         description = "Number of decimal places to round vertex weights to.",
         default = 2,
         min = 0,
         max = 10,
     )
+    bpy.types.Scene.bs_include_locked_groups = bpy.props.BoolProperty(
+        name = "Include Locked Groups",
+        description = "Quantize weights in locked vertex groups too. When disabled, locked groups keep "
+                      "their current weights and only unlocked groups are adjusted.",
+        default = True,
+    )
     bpy.utils.register_class(BS_OT_RoundMeshVertexWeights)
 
 def unregister():
+    del bpy.types.Scene.bs_decimal_places
+    del bpy.types.Scene.bs_include_locked_groups
     bpy.utils.unregister_class(BS_OT_RoundMeshVertexWeights)
 
 if __name__ == "__main__":
