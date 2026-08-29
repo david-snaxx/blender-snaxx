@@ -118,6 +118,34 @@ class BS_OT_RoundMeshVertexWeights(bpy.types.Operator):
 
         return whole_units
 
+    @staticmethod
+    def get_affected_mesh_objects(context):
+        affected = []
+        affected_locked = []
+        for obj in BS_OT_RoundMeshVertexWeights.get_selected_mesh_objects(context):
+            if not obj.vertex_groups:
+                continue
+
+            locked_indices = BS_OT_RoundMeshVertexWeights.get_locked_vertex_group_indices(obj)
+            has_any_weights = False
+            has_editable_weights = False
+            for vertex in obj.data.vertices:
+                for assignment in vertex.groups:
+                    # there are some weights by this point
+                    has_any_weights = True
+                    if assignment.group not in locked_indices:
+                        # this group wasn't locked
+                        has_editable_weights = True
+                        break
+                if has_editable_weights:
+                    break
+
+            if has_editable_weights:
+                affected.append(obj)
+            elif has_any_weights:
+                affected_locked.append(obj)
+        return affected, affected_locked
+
 def register():
     bpy.types.Scene.bs_decimal_places = bpy.props.IntProperty(
         name = "Decimal Places",

@@ -38,6 +38,8 @@ class BS_PT_Panel(bpy.types.Panel):
                 has_armature.add(obj)
             else:
                 no_armature.add(obj)
+        if not has_armature and not no_armature:
+            box.label(text="No valid objects selected", icon="INFO")
         if has_armature:
             sub = box.box()
             sub.label(text = f"Found {len(has_armature)} mesh objects with armature:", icon = "CHECKMARK")
@@ -71,7 +73,7 @@ class BS_PT_Panel(bpy.types.Panel):
                               .BS_OT_RenameChildToMatchParent
                               .split_parent_child_groups_to_valid_and_conflicting(parent_child_dict))
         if not valid and not conflicting:
-            box.label(text="Nothing selected", icon="INFO")
+            box.label(text="No valid objects selected", icon="INFO")
 
         if valid:
             sub = box.box()
@@ -109,13 +111,29 @@ class BS_PT_Panel(bpy.types.Panel):
         col.prop(scene, "bs_include_locked_groups")
         col.prop(scene, "bs_decimal_places")
         # preview
-        selected_mesh_objects = (round_mesh_vertex_weights
-                                 .BS_OT_RoundMeshVertexWeights
-                                 .get_selected_mesh_objects(context))
+        affected_selected, affected_locked_selected = (round_mesh_vertex_weights
+                                                       .BS_OT_RoundMeshVertexWeights
+                                                       .get_affected_mesh_objects(context))
+        if not affected_selected and not affected_locked_selected:
+            box.label(text="No valid objects selected", icon="INFO")
+        if affected_selected:
+            sub = box.box()
+            sub.label(text = f"Found {len(affected_selected)} candidate mesh objects:", icon = "CHECKMARK")
+            for obj in affected_selected:
+                row = sub.row()
+                row.label(text = obj.name)
+        if affected_locked_selected:
+            sub = box.box()
+            sub.label(text = f"Found {len(affected_locked_selected)} candidate mesh objects with locked groups:", icon = "INFO")
+            sub.label(text = "Include locked groups must be toggled to affect all vertex groups")
+            for obj in affected_locked_selected:
+                row = sub.row()
+                row.label(text = obj.name)
         # runner
         op = box.operator("bs.round_mesh_vertex_weights", text="Round mesh vertex weights")
-        ob.include_locked_groups = scene.bs_include_locked_groups
+        op.include_locked_groups = scene.bs_include_locked_groups
         op.decimal_places = scene.bs_decimal_places
+
 def register():
     bpy.utils.register_class(BS_PT_Panel)
 
