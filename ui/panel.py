@@ -18,6 +18,7 @@ class BS_PT_Panel(bpy.types.Panel):
         self.draw_clean_unusued_vertex_groups(context, layout, scene)
         self.draw_rename_child_to_match_parent(context, layout, scene)
         self.round_mesh_vertex_weights(context, layout, scene)
+        self.draw_shift_uvs(context, layout, scene)
 
     def draw_clean_unusued_vertex_groups(self, context, layout, scene):
         box = layout.box()
@@ -135,7 +136,7 @@ class BS_PT_Panel(bpy.types.Panel):
     def draw_shift_uvs(self, context, layout, scene):
         panel = layout.panel
         header, panel = layout.panel("bs_shift_uvs_panel", default_closed = False)
-        header.label(text = "Shift UVs")
+        header.label(text = "Shift UVs", icon = 'UV')
         if panel:
             panel.prop(scene, "bs_uv_x")
             panel.prop(scene, "bs_uv_y")

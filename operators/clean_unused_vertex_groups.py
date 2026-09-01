@@ -1,5 +1,5 @@
 import bpy
-from utils.getters import (get_selected_mesh_objects,
+from ..utils.getters import (get_selected_mesh_objects,
                            get_mesh_armature)
 
 class BS_OT_CleanUnusedVertexGroups(bpy.types.Operator):

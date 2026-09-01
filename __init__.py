@@ -19,6 +19,7 @@ def register():
     rename_child_to_match_parent.register()
     round_mesh_vertex_weights.register()
     shift_uvs.register()
+
     panel.register()
 
 def unregister():
@@ -26,6 +27,7 @@ def unregister():
     rename_child_to_match_parent.unregister()
     round_mesh_vertex_weights.unregister()
     shift_uvs.unregister()
+
     panel.unregister()
 
 if __name__ == "__main__":
