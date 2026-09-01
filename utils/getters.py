@@ -1,7 +1,18 @@
+import bpy
+
 def get_selected_mesh_objects(context):
     meshes = []
     for obj in context.selected_objects:
         if obj.type == 'MESH':
+            meshes.append(obj)
+    return meshes
+
+def get_selected_unique_mesh_objects(context):
+    seen = set()
+    meshes = []
+    for obj in bpy.data.objects:
+        if obj.type == 'MESH' and obj.data not in seen:
+            seen.add(obj.data)
             meshes.append(obj)
     return meshes
 
