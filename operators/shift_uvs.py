@@ -1,6 +1,6 @@
 import math
 import bpy
-from utils.getters import (get_selected_unique_mesh_objects)
+from ..utils.getters import (get_selected_unique_mesh_objects)
 
 class BS_OT_ShiftUVs(bpy.types.Operator):
     bl_idname = "bs.shift_uvs"

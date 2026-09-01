@@ -1,5 +1,5 @@
 import bpy
-from utils.getters import (get_selected_mesh_objects,
+from ..utils.getters import (get_selected_mesh_objects,
                            get_mesh_armature)
 from ..operators import (clean_unused_vertex_groups,
                          rename_child_to_match_parent,
@@ -131,6 +131,15 @@ class BS_PT_Panel(bpy.types.Panel):
         op = box.operator("bs.round_mesh_vertex_weights", text="Round mesh vertex weights")
         op.include_locked_groups = scene.bs_include_locked_groups
         op.decimal_places = scene.bs_decimal_places
+
+    def draw_shift_uvs(self, context, layout, scene):
+        panel = layout.panel
+        header, panel = layout.panel("bs_shift_uvs_panel", default_closed = False)
+        header.label(text = "Shift UVs")
+        if panel:
+            panel.prop(scene, "bs_uv_x")
+            panel.prop(scene, "bs_uv_y")
+            panel.operator(scene, "bs_shift_uvs")
 
 def register():
     bpy.utils.register_class(BS_PT_Panel)
