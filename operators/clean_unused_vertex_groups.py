@@ -1,4 +1,6 @@
 import bpy
+from utils.getters import (get_selected_mesh_objects,
+                           get_mesh_armature)
 
 class BS_OT_CleanUnusedVertexGroups(bpy.types.Operator):
     bl_idname = "bs.clean_unused_vertex_groups"
@@ -22,7 +24,7 @@ class BS_OT_CleanUnusedVertexGroups(bpy.types.Operator):
     )
 
     def execute(self, context):
-        for obj in self.get_selected_mesh_objects(context):
+        for obj in get_selected_mesh_objects(context):
             mesh = obj.data
 
             assigned_weights_vertex_group_indices = set()
@@ -35,7 +37,7 @@ class BS_OT_CleanUnusedVertexGroups(bpy.types.Operator):
             should_check_unassigned = self.remove_unassigned
             assigned_armature_bone_vertex_group_indices = set()
             if self.remove_unassigned:
-                armature = self.get_mesh_armature(obj)
+                armature = get_mesh_armature(obj)
                 if armature is None:
                     self.report({"WARNING"}, f"{obj.name} does not have an armature; skipping unassigned removal")
                     should_check_unassigned = False
@@ -63,24 +65,6 @@ class BS_OT_CleanUnusedVertexGroups(bpy.types.Operator):
                     obj.vertex_groups.remove(vertex_group)
         self.report({"INFO"}, "Finished cleaning vertex groups")
         return {"FINISHED"}
-
-    @staticmethod
-    def get_selected_mesh_objects(context):
-        meshes = []
-        for obj in context.selected_objects:
-            if obj.type == 'MESH':
-                meshes.append(obj)
-        return meshes
-
-    @staticmethod
-    def get_mesh_armature(mesh_object):
-        if mesh_object.parent and mesh_object.parent.type == 'ARMATURE':
-            return mesh_object.parent
-        for modifier in mesh_object.modifiers:
-            if modifier.type == 'ARMATURE' and modifier.object:
-                return modifier.object
-        return None
-
 
 def register():
     bpy.types.Scene.bs_remove_unweighted = bpy.props.BoolProperty(

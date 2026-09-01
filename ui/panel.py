@@ -1,4 +1,6 @@
 import bpy
+from utils.getters import (get_selected_mesh_objects,
+                           get_mesh_armature)
 from ..operators import (clean_unused_vertex_groups,
                          rename_child_to_match_parent,
                          round_mesh_vertex_weights)
@@ -25,15 +27,11 @@ class BS_PT_Panel(bpy.types.Panel):
         col.prop(scene, "bs_remove_unweighted")
         col.prop(scene, "bs_remove_unassigned")
         # preview
-        selected_mesh_objects = (clean_unused_vertex_groups
-                           .BS_OT_CleanUnusedVertexGroups
-                           .get_selected_mesh_objects(context))
+        selected_mesh_objects = get_selected_mesh_objects(context)
         has_armature = set()
         no_armature = set()
         for obj in selected_mesh_objects:
-            armature = (clean_unused_vertex_groups
-                        .BS_OT_CleanUnusedVertexGroups
-                        .get_mesh_armature(obj))
+            armature = get_mesh_armature(obj)
             if armature is not None:
                 has_armature.add(obj)
             else:
