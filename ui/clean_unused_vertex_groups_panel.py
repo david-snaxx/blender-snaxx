@@ -6,8 +6,11 @@ def draw_clean_unused_vertex_groups(context, layout, scene):
     header, panel = layout.panel("bs_clean_unused_vertex_groups", default_closed = False)
     header.label(text = "Clean unused vertex groups", icon = "GROUP_VERTEX")
     if panel:
-        panel.prop(scene, "bs_remove_unweighted")
-        panel.prop(scene, "bs_remove_unassigned")
+        panel.use_property_split = True
+        panel.use_property_decorate = False
+        col = panel.column()
+        col.prop(scene, "bs_remove_unweighted")
+        col.prop(scene, "bs_remove_unassigned")
         op = panel.operator("bs.clean_unused_vertex_groups", text="Clean unused vertex groups")
         op.remove_unweighted = scene.bs_remove_unweighted
         op.remove_unassigned = scene.bs_remove_unassigned
