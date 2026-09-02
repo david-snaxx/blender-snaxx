@@ -3,7 +3,7 @@ from ..operators import (rename_child_to_match_parent)
 
 def draw_rename_child_to_match_parent(context, layout, scene):
     header, panel = layout.panel("bs_rename_child_to_match_parent", default_closed=False)
-    header.label(text="Rename child to match parent", icon="TEXT")
+    header.label(text="Rename Child to Match Parent Object", icon="TEXT")
     if panel:
         panel.use_property_split = True
         panel.use_property_decorate = False
@@ -14,7 +14,7 @@ def draw_rename_child_to_match_parent(context, layout, scene):
         row = panel.row()
         row.alignment = 'CENTER'
         row.scale_y = 1.4
-        op = row.operator("bs.rename_child_to_match_parent", text="Rename child to match parent", icon="GHOST_ENABLED")
+        op = row.operator("bs.rename_child_to_match_parent", text="Rename Child to Match Parent Object", icon="GHOST_ENABLED")
         op.suffix = scene.bs_suffix
         op.prefix = scene.bs_prefix
         # preview

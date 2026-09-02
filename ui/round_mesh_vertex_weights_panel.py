@@ -3,7 +3,7 @@ from ..operators import (round_mesh_vertex_weights)
 
 def draw_round_mesh_vertex_weights(context, layout, scene):
     header, panel = layout.panel("bs_round_mesh_vertex_weights", default_closed = False)
-    header.label(text = "Round mesh vertex weights", icon = "GROUP_VERTEX")
+    header.label(text = "Round Mesh Vertex Weights", icon = "GROUP_VERTEX")
     if panel:
         panel.use_property_split = True
         panel.use_property_decorate = False
@@ -14,7 +14,7 @@ def draw_round_mesh_vertex_weights(context, layout, scene):
         row = panel.row()
         row.alignment = 'CENTER'
         row.scale_y = 1.4
-        op = row.operator("bs.round_mesh_vertex_weights", text="Round mesh vertex weights", icon="GHOST_ENABLED")
+        op = row.operator("bs.round_mesh_vertex_weights", text="Round Mesh Vertex Weights", icon="GHOST_ENABLED")
         op.include_locked_groups = scene.bs_include_locked_groups
         op.decimal_places = scene.bs_decimal_places
         # preview

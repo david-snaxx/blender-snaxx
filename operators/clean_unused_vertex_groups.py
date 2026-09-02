@@ -4,7 +4,7 @@ from ..utils.getters import (get_selected_mesh_objects,
 
 class BS_OT_CleanUnusedVertexGroups(bpy.types.Operator):
     bl_idname = "bs.clean_unused_vertex_groups"
-    bl_label = "Clean unused vertex groups"
+    bl_label = "Clean Unused Vertex Groups"
     bl_options = {"REGISTER", "UNDO"}
 
     # noinspection PyTypeHints

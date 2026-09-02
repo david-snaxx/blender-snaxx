@@ -4,7 +4,7 @@ from ..utils.getters import (get_selected_mesh_objects,
 
 def draw_clean_unused_vertex_groups(context, layout, scene):
     header, panel = layout.panel("bs_clean_unused_vertex_groups", default_closed = False)
-    header.label(text = "Clean unused vertex groups", icon = "GROUP_VERTEX")
+    header.label(text = "Clean Unused Vertex Groups", icon = "GROUP_VERTEX")
     if panel:
         panel.use_property_split = True
         panel.use_property_decorate = False
@@ -15,7 +15,7 @@ def draw_clean_unused_vertex_groups(context, layout, scene):
         row = panel.row()
         row.alignment = 'CENTER'
         row.scale_y = 1.4
-        op = row.operator("bs.clean_unused_vertex_groups", text="Clean unused vertex groups", icon="GHOST_ENABLED")
+        op = row.operator("bs.clean_unused_vertex_groups", text="Clean Unused Vertex Groups", icon="GHOST_ENABLED")
         op.remove_unweighted = scene.bs_remove_unweighted
         op.remove_unassigned = scene.bs_remove_unassigned
         # preview

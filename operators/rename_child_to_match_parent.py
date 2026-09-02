@@ -2,7 +2,7 @@ import bpy
 
 class BS_OT_RenameChildToMatchParent(bpy.types.Operator):
     bl_idname = "bs.rename_child_to_match_parent"
-    bl_label = "Rename child to match parent object"
+    bl_label = "Rename Child to Match Parent Object"
     bl_description = ("Renames the selected child object to match its parent object's name with an optional prefix"
                       "and suffix.")
     bl_options = {'REGISTER', 'UNDO'}

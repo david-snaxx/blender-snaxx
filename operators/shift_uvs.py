@@ -51,7 +51,7 @@ def register():
         description="Shift selected mesh UVs vertically (x) by this amount"
     )
     bpy.types.Scene.bs_move_y = bpy.props.IntProperty(
-        name="y (u)",
+        name="y (v)",
         description="Shift selected mesh UVs horizontally (y) by this amount"
     )
     bpy.types.Scene.bs_move_target = bpy.props.EnumProperty(
