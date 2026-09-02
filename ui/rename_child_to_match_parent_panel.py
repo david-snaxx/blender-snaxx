@@ -11,8 +11,7 @@ def draw_rename_child_to_match_parent(context, layout, scene):
         op.suffix = scene.bs_suffix
         op.prefix = scene.bs_prefix
         # preview
-        preview_box = panel.box()
-        preview_header, preview_panel = preview_box.panel("bs_rename_child_to_match_parent_preview", default_closed=True)
+        preview_header, preview_panel = panel.panel("bs_rename_child_to_match_parent_preview", default_closed=True)
         preview_header.label(text="Preview")
         if preview_panel:
             parent_child_dict = (rename_child_to_match_parent

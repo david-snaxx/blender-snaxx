@@ -25,8 +25,9 @@ class BS_OT_RepositionUVs(bpy.types.Operator):
             ('ACTIVE', "Active UV Map Only", "Move only the currently active UV map of the selected meshes"),
             ('ALL', "All UV Maps", "Move all UV maps of the selected meshes"),
         ],
-        default='ACTIVE',
+        default='ALL',
     )
+
     def execute(self, context):
         meshes = get_selected_mesh_objects(context)
         for mesh in meshes:

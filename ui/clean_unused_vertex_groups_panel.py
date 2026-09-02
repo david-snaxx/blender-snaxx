@@ -12,8 +12,7 @@ def draw_clean_unused_vertex_groups(context, layout, scene):
         op.remove_unweighted = scene.bs_remove_unweighted
         op.remove_unassigned = scene.bs_remove_unassigned
         # preview
-        preview_box = panel.box()
-        preview_header, preview_panel = preview_box.panel("bs_clean_unused_vertex_groups_preview", default_closed = True)
+        preview_header, preview_panel = panel.panel("bs_clean_unused_vertex_groups_preview", default_closed = True)
         preview_header.label(text="Preview")
         if preview_panel:
             selected_mesh_objects = get_selected_mesh_objects(context)

@@ -11,8 +11,7 @@ def draw_round_mesh_vertex_weights(context, layout, scene):
         op.include_locked_groups = scene.bs_include_locked_groups
         op.decimal_places = scene.bs_decimal_places
         # preview
-        preview_box = panel.box()
-        preview_header, preview_panel = preview_box.panel("bs_round_mesh_vertex_weights_preview", default_closed = True)
+        preview_header, preview_panel = panel.panel("bs_round_mesh_vertex_weights_preview", default_closed = True)
         preview_header.label(text="Preview")
         if preview_panel:
             affected_selected, affected_locked_selected = (round_mesh_vertex_weights

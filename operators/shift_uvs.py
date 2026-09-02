@@ -28,7 +28,7 @@ class BS_OT_ShiftUVs(bpy.types.Operator):
             ('ACTIVE', "Active UV Map Only", "Move only the currently active UV map of the selected meshes"),
             ('ALL', "All UV Maps", "Move all UV maps of the selected meshes"),
         ],
-        default='ACTIVE',
+        default='ALL',
     )
 
     def execute(self, context):
