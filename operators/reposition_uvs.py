@@ -18,7 +18,7 @@ class BS_OT_RepositionUVs(bpy.types.Operator):
         description = "y (v) coordinate to shift UVs to",
     )
     # noinspection PyTypeHints
-    move_target: bpy.props.EnumProperty(
+    reposition_target: bpy.props.EnumProperty(
         name="UV Maps to Move",
         description="Which UV map(s) to shift",
         items=[
@@ -30,9 +30,9 @@ class BS_OT_RepositionUVs(bpy.types.Operator):
     def execute(self, context):
         meshes = get_selected_mesh_objects(context)
         for mesh in meshes:
-            if self.move_target == "ACTIVE":
+            if self.reposition_target == "ACTIVE":
                 reposition_active_uvs_to_tile_coords(mesh, self.reposition_x, self.reposition_y)
-            elif self.move_target == "ALL":
+            elif self.reposition_target == "ALL":
                 reposition_all_uvs_to_tile_coords(mesh, self.reposition_x, self.reposition_y)
             else:
                 self.report({'ERROR'}, "Unknown error, no move target found")
@@ -49,7 +49,7 @@ def register():
         name = "y (v)",
         description = "y (v) coordinate to shift UVs to",
     )
-    bpy.types.Scene.bs_move_target = bpy.props.EnumProperty(
+    bpy.types.Scene.bs_reposition_target = bpy.props.EnumProperty(
         name="UV Maps to Move",
         description="Which UV map(s) to shift",
         items=[
@@ -63,7 +63,7 @@ def register():
 def unregister():
     del bpy.types.Scene.bs_reposition_x
     del bpy.types.Scene.bs_reposition_y
-    del bpy.types.Scene.bs_move_target
+    del bpy.types.Scene.bs_reposition_target
     bpy.utils.unregister_class(BS_OT_RepositionUVs)
 
 if __name__ == "__main__":
