@@ -14,7 +14,7 @@ def draw_clean_unused_vertex_groups(context, layout, scene):
         # preview
         preview_box = panel.box()
         preview_header, preview_panel = preview_box.panel("bs_clean_unused_vertex_groups_preview", default_closed = True)
-        preview_header.label(text="Preview", icon='INFO')
+        preview_header.label(text="Preview")
         if preview_panel:
             selected_mesh_objects = get_selected_mesh_objects(context)
             has_armature = set()

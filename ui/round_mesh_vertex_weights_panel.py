@@ -13,7 +13,7 @@ def draw_round_mesh_vertex_weights(context, layout, scene):
         # preview
         preview_box = panel.box()
         preview_header, preview_panel = preview_box.panel("bs_round_mesh_vertex_weights_preview", default_closed = True)
-        preview_header.label(text="Preview", icon='INFO')
+        preview_header.label(text="Preview")
         if preview_panel:
             affected_selected, affected_locked_selected = (round_mesh_vertex_weights
                                                            .BS_OT_RoundMeshVertexWeights
