@@ -57,7 +57,7 @@ def register():
             ('ACTIVE', "Active UV Map Only", "Move only the currently active UV map of the selected meshes"),
             ('ALL', "All UV Maps", "Move all UV maps of the selected meshes"),
         ],
-        default='ACTIVE',
+        default='ALL',
     )
     bpy.utils.register_class(BS_OT_RepositionUVs)
 
