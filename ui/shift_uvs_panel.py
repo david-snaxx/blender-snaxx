@@ -6,13 +6,11 @@ def draw_shift_uvs(context, layout, scene):
     if panel:
         panel.prop(scene, "bs_move_x")
         panel.prop(scene, "bs_move_y")
-        panel.prop(scene, "bs_move_active_uv_map")
-        panel.prop(scene, "bs_move_all_uv_maps")
+        panel.prop(scene, "bs_move_target")
         op = panel.operator("bs.shift_uvs", text="Shift UVs")
         op.move_x = scene.bs_move_x
         op.move_y = scene.bs_move_y
-        op.move_active_uv_map = scene.bs_move_active_uv_map
-        op.move_all_uv_maps = scene.bs_move_all_uv_maps
+        op.move_target = scene.bs_move_target
         # preview
         preview_box = panel.box()
         preview_header, preview_panel = preview_box.panel("bs_shift_uvs_preview_panel", default_closed=True)
