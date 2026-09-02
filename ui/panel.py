@@ -2,6 +2,7 @@ import bpy
 from ..operators import (rename_child_to_match_parent,
                          round_mesh_vertex_weights)
 from .clean_unused_vertex_groups_panel import (draw_clean_unused_vertex_groups)
+from .shift_uvs_panel import (draw_shift_uvs)
 
 class BS_PT_Panel(bpy.types.Panel):
     bl_idname = "bs.panel"
@@ -16,7 +17,7 @@ class BS_PT_Panel(bpy.types.Panel):
         draw_clean_unused_vertex_groups(context, layout, scene)
         self.draw_rename_child_to_match_parent(context, layout, scene)
         self.round_mesh_vertex_weights(context, layout, scene)
-        self.draw_shift_uvs(context, layout, scene)
+        draw_shift_uvs(context, layout, scene)
 
     def draw_rename_child_to_match_parent(self, context, layout, scene):
         box = layout.box()
@@ -94,25 +95,7 @@ class BS_PT_Panel(bpy.types.Panel):
         op.include_locked_groups = scene.bs_include_locked_groups
         op.decimal_places = scene.bs_decimal_places
 
-    def draw_shift_uvs(self, context, layout, scene):
-        header, panel = layout.panel("bs_shift_uvs_panel", default_closed = False)
-        header.label(text = "Shift UVs", icon = 'UV')
-        if panel:
-            panel.prop(scene, "bs_move_x")
-            panel.prop(scene, "bs_move_y")
-            panel.prop(scene, "bs_move_active_uv_map")
-            panel.prop(scene, "bs_move_all_uv_maps")
-            op = panel.operator("bs.shift_uvs", text = "Shift UVs")
-            op.move_x = scene.bs_move_x
-            op.move_y = scene.bs_move_y
-            op.move_active_uv_map = scene.bs_move_active_uv_map
-            op.move_all_uv_maps = scene.bs_move_all_uv_maps
-            # preview
-            preview_box = panel.box()
-            preview_header, preview_panel = preview_box.panel("bs_shift_uvs_preview_panel", default_closed = True)
-            preview_header.label(text="Preview", icon='INFO')
-            if preview_panel:
-                preview_panel.label(text="Preview", icon='INFO')
+
 
 def register():
     bpy.utils.register_class(BS_PT_Panel)
