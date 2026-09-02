@@ -84,7 +84,7 @@ def reposition_all_uvs_to_tile_coords(obj, tile_u, tile_v):
         current_u, current_v = get_current_uv_tile_coords(obj)
         offset_u = tile_u - current_u
         offset_v = tile_v - current_v
-        for loop_uv in uv_layer:
+        for loop_uv in uv_layer.data:
             loop_uv.uv.x += offset_u
             loop_uv.uv.y += offset_v
 
