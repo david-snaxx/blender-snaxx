@@ -8,9 +8,9 @@ def draw_reposition_uvs(context, layout, scene):
         panel.prop(scene, "bs_reposition_y")
         panel.prop(scene, "bs_reposition_target")
         op = panel.operator("bs.reposition_uvs", text="Reposition UVs")
-        op.move_x = scene.bs_reposition_x
-        op.move_y = scene.bs_reposition_y
-        op.move_target = scene.bs_reposition_target
+        op.reposition_x = scene.bs_reposition_x
+        op.reposition_y = scene.bs_reposition_y
+        op.reposition_target = scene.bs_reposition_target
         # preview
         preview_header, preview_panel = panel.panel("bs_reposition_uvs_preview_panel", default_closed=True)
         preview_header.label(text="Preview")
