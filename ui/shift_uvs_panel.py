@@ -10,7 +10,11 @@ def draw_shift_uvs(context, layout, scene):
         col.prop(scene, "bs_move_x")
         col.prop(scene, "bs_move_y")
         col.prop(scene, "bs_move_target")
-        op = panel.operator("bs.shift_uvs", text="Shift UVs")
+        panel.separator()
+        row = panel.row()
+        row.alignment = 'CENTER'
+        row.scale_y = 1.4
+        op = row.operator("bs.shift_uvs", text="Shift UVs", icon="GHOST_ENABLED")
         op.move_x = scene.bs_move_x
         op.move_y = scene.bs_move_y
         op.move_target = scene.bs_move_target

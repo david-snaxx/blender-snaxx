@@ -10,7 +10,11 @@ def draw_reposition_uvs(context, layout, scene):
         col.prop(scene, "bs_reposition_x")
         col.prop(scene, "bs_reposition_y")
         col.prop(scene, "bs_reposition_target")
-        op = panel.operator("bs.reposition_uvs", text="Reposition UVs")
+        panel.separator()
+        row = panel.row()
+        row.alignment = 'CENTER'
+        row.scale_y = 1.4
+        op = row.operator("bs.reposition_uvs", text="Reposition UVs", icon="GHOST_ENABLED")
         op.reposition_x = scene.bs_reposition_x
         op.reposition_y = scene.bs_reposition_y
         op.reposition_target = scene.bs_reposition_target

@@ -10,7 +10,11 @@ def draw_rename_child_to_match_parent(context, layout, scene):
         col = panel.column()
         col.prop(scene, "bs_prefix")
         col.prop(scene, "bs_suffix")
-        op = panel.operator("bs.rename_child_to_match_parent", text="Rename child to match parent")
+        panel.separator()
+        row = panel.row()
+        row.alignment = 'CENTER'
+        row.scale_y = 1.4
+        op = row.operator("bs.rename_child_to_match_parent", text="Rename child to match parent", icon="GHOST_ENABLED")
         op.suffix = scene.bs_suffix
         op.prefix = scene.bs_prefix
         # preview

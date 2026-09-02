@@ -10,7 +10,11 @@ def draw_round_mesh_vertex_weights(context, layout, scene):
         col = panel.column()
         col.prop(scene, "bs_include_locked_groups")
         col.prop(scene, "bs_decimal_places")
-        op = panel.operator("bs.round_mesh_vertex_weights", text="Round mesh vertex weights")
+        panel.separator()
+        row = panel.row()
+        row.alignment = 'CENTER'
+        row.scale_y = 1.4
+        op = row.operator("bs.round_mesh_vertex_weights", text="Round mesh vertex weights", icon="GHOST_ENABLED")
         op.include_locked_groups = scene.bs_include_locked_groups
         op.decimal_places = scene.bs_decimal_places
         # preview

@@ -11,7 +11,11 @@ def draw_clean_unused_vertex_groups(context, layout, scene):
         col = panel.column()
         col.prop(scene, "bs_remove_unweighted")
         col.prop(scene, "bs_remove_unassigned")
-        op = panel.operator("bs.clean_unused_vertex_groups", text="Clean unused vertex groups")
+        panel.separator()
+        row = panel.row()
+        row.alignment = 'CENTER'
+        row.scale_y = 1.4
+        op = row.operator("bs.clean_unused_vertex_groups", text="Clean unused vertex groups", icon="GHOST_ENABLED")
         op.remove_unweighted = scene.bs_remove_unweighted
         op.remove_unassigned = scene.bs_remove_unassigned
         # preview
