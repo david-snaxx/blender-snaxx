@@ -1,5 +1,6 @@
 import bpy
 from .clean_unused_vertex_groups_panel import (draw_clean_unused_vertex_groups)
+from .quantize_vertex_weights_panel import (draw_quantize_vertex_weights)
 from .rename_child_to_match_parent_panel import (draw_rename_child_to_match_parent)
 from .reposition_uvs_panel import (draw_reposition_uvs)
 from .round_mesh_vertex_weights_panel import (draw_round_mesh_vertex_weights)
@@ -16,6 +17,7 @@ class BS_PT_Panel(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
         draw_clean_unused_vertex_groups(context, layout, scene)
+        draw_quantize_vertex_weights(context, layout, scene)
         draw_rename_child_to_match_parent(context, layout, scene)
         draw_round_mesh_vertex_weights(context, layout, scene)
         draw_shift_uvs(context, layout, scene)

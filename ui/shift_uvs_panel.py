@@ -19,7 +19,7 @@ def draw_shift_uvs(context, layout, scene):
         op.move_y = scene.bs_move_y
         op.move_target = scene.bs_move_target
         # preview
-        preview_header, preview_panel = panel.panel("bs_shift_uvs_preview_panel", default_closed=True)
+        preview_header, preview_panel = panel.panel("bs_shift_uvs_panel_preview", default_closed=True)
         preview_header.label(text="Preview")
         if preview_panel:
             preview_panel.label(text="WIP", icon='INFO')

@@ -4,7 +4,7 @@ from ..utils.getters import (get_selected_mesh_objects)
 
 class SB_OT_QuantizeVertexWeights(bpy.types.Operator):
     """Quantize vertex weights of all selected meshes to a fixed number of steps"""
-    bl_idname = "sb.quantize_selected_weights"
+    bl_idname = "bs.quantize_selected_weights"
     bl_label = "Quantize Selected Weights"
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -58,7 +58,7 @@ class SB_OT_QuantizeVertexWeights(bpy.types.Operator):
         return {'FINISHED'}
 
 def register():
-    bpy.types.Scene.sb_quantize_steps = bpy.props.IntProperty(
+    bpy.types.Scene.bs_quantize_steps = bpy.props.IntProperty(
         name="Steps",
         description="Discrete steps to quantize into "
                     "(255 matches 8-bit normalized byte weights)",

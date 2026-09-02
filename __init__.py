@@ -9,6 +9,7 @@ bl_info = {
 }
 
 from .operators import (clean_unused_vertex_groups,
+                        quantize_vertex_weights,
                         rename_child_to_match_parent,
                         round_mesh_vertex_weights,
                         shift_uvs,
@@ -17,6 +18,7 @@ from .ui import (panel)
 
 def register():
     clean_unused_vertex_groups.register()
+    quantize_vertex_weights.register()
     rename_child_to_match_parent.register()
     round_mesh_vertex_weights.register()
     shift_uvs.register()
@@ -25,6 +27,7 @@ def register():
 
 def unregister():
     clean_unused_vertex_groups.unregister()
+    quantize_vertex_weights.unregister()
     rename_child_to_match_parent.unregister()
     round_mesh_vertex_weights.unregister()
     shift_uvs.unregister()
