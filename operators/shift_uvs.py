@@ -46,16 +46,6 @@ class BS_OT_ShiftUVs(bpy.types.Operator):
 
 
 def register():
-    # bpy.types.Scene.bs_uv_x = bpy.props.IntProperty(
-    #     name = "x (u)",
-    #     description = "x (u) coordinate to shift UVs to",
-    # )
-    #
-    # bpy.types.Scene.bs_uv_y = bpy.props.IntProperty(
-    #     name = "y (v)",
-    #     description = "y (v) coordinate to shift UVs to",
-    # )
-
     bpy.types.Scene.bs_move_x = bpy.props.IntProperty(
         name="x (u)",
         description="Shift selected mesh UVs vertically (x) by this amount"

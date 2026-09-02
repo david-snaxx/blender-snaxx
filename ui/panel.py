@@ -17,9 +17,9 @@ class BS_PT_Panel(bpy.types.Panel):
         scene = context.scene
         draw_clean_unused_vertex_groups(context, layout, scene)
         draw_rename_child_to_match_parent(context, layout, scene)
-        draw_reposition_uvs(context, layout, scene)
         draw_round_mesh_vertex_weights(context, layout, scene)
         draw_shift_uvs(context, layout, scene)
+        draw_reposition_uvs(context, layout, scene)
 
 def register():
     bpy.utils.register_class(BS_PT_Panel)
