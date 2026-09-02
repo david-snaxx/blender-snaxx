@@ -1,9 +1,7 @@
 import bpy
-from ..utils.getters import (get_selected_mesh_objects,
-                           get_mesh_armature)
-from ..operators import (clean_unused_vertex_groups,
-                         rename_child_to_match_parent,
+from ..operators import (rename_child_to_match_parent,
                          round_mesh_vertex_weights)
+from .clean_unused_vertex_groups_panel import (draw_clean_unused_vertex_groups)
 
 class BS_PT_Panel(bpy.types.Panel):
     bl_idname = "bs.panel"
@@ -15,47 +13,10 @@ class BS_PT_Panel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        self.draw_clean_unusued_vertex_groups(context, layout, scene)
+        draw_clean_unused_vertex_groups(context, layout, scene)
         self.draw_rename_child_to_match_parent(context, layout, scene)
         self.round_mesh_vertex_weights(context, layout, scene)
         self.draw_shift_uvs(context, layout, scene)
-
-    def draw_clean_unusued_vertex_groups(self, context, layout, scene):
-        box = layout.box()
-        box.label(text = "Clean unused vertex groups")
-        # options
-        col = box.column()
-        col.prop(scene, "bs_remove_unweighted")
-        col.prop(scene, "bs_remove_unassigned")
-        # preview
-        selected_mesh_objects = get_selected_mesh_objects(context)
-        has_armature = set()
-        no_armature = set()
-        for obj in selected_mesh_objects:
-            armature = get_mesh_armature(obj)
-            if armature is not None:
-                has_armature.add(obj)
-            else:
-                no_armature.add(obj)
-        if not has_armature and not no_armature:
-            box.label(text="No valid objects selected", icon="INFO")
-        if has_armature:
-            sub = box.box()
-            sub.label(text = f"Found {len(has_armature)} mesh objects with armature:", icon = "CHECKMARK")
-            for obj in has_armature:
-                row = sub.row()
-                row.label(text = obj.name)
-        if no_armature:
-            sub = box.box()
-            sub.label(text = f"Found {len(no_armature)} mesh objects with no armature:", icon = "ERROR")
-            sub.label(text = "unassigned clean operation will not run on these objects")
-            for obj in no_armature:
-                row = sub.row()
-                row.label(text = obj.name)
-        # runner
-        op = box.operator("bs.clean_unused_vertex_groups", text = "Clean unused vertex groups")
-        op.remove_unweighted = scene.bs_remove_unweighted
-        op.remove_unassigned = scene.bs_remove_unassigned
 
     def draw_rename_child_to_match_parent(self, context, layout, scene):
         box = layout.box()
@@ -134,13 +95,24 @@ class BS_PT_Panel(bpy.types.Panel):
         op.decimal_places = scene.bs_decimal_places
 
     def draw_shift_uvs(self, context, layout, scene):
-        panel = layout.panel
         header, panel = layout.panel("bs_shift_uvs_panel", default_closed = False)
         header.label(text = "Shift UVs", icon = 'UV')
         if panel:
-            panel.prop(scene, "bs_uv_x")
-            panel.prop(scene, "bs_uv_y")
-            panel.operator(scene, "bs_shift_uvs")
+            panel.prop(scene, "bs_move_x")
+            panel.prop(scene, "bs_move_y")
+            panel.prop(scene, "bs_move_active_uv_map")
+            panel.prop(scene, "bs_move_all_uv_maps")
+            op = panel.operator("bs.shift_uvs", text = "Shift UVs")
+            op.move_x = scene.bs_move_x
+            op.move_y = scene.bs_move_y
+            op.move_active_uv_map = scene.bs_move_active_uv_map
+            op.move_all_uv_maps = scene.bs_move_all_uv_maps
+            # preview
+            preview_box = panel.box()
+            preview_header, preview_panel = preview_box.panel("bs_shift_uvs_preview_panel", default_closed = True)
+            preview_header.label(text="Preview", icon='INFO')
+            if preview_panel:
+                preview_panel.label(text="Preview", icon='INFO')
 
 def register():
     bpy.utils.register_class(BS_PT_Panel)
