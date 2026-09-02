@@ -19,10 +19,6 @@ class BS_PT_Panel(bpy.types.Panel):
         draw_round_mesh_vertex_weights(context, layout, scene)
         draw_shift_uvs(context, layout, scene)
 
-
-
-
-
 def register():
     bpy.utils.register_class(BS_PT_Panel)
 
