@@ -3,6 +3,9 @@ import bpy
 class BS_OT_RoundMeshVertexWeights(bpy.types.Operator):
     bl_idname = "bs.round_mesh_vertex_weights"
     bl_label = "Round Mesh Vertex Weights"
+    bl_description = ("Rounds the weights of the currently selected meshes to the input number of decimal places."
+                      "All weights are then adjusted so the total weight sums to 1.0 with remainder weights prioritized "
+                      "to the vertices who lost the most from initial rounding truncation.")
     bl_options = {'REGISTER', 'UNDO'}
 
     # noinspection PyTypeHints

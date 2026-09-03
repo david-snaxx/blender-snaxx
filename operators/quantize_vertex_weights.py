@@ -3,9 +3,10 @@ from ..utils.getters import (get_selected_mesh_objects)
 
 
 class SB_OT_QuantizeVertexWeights(bpy.types.Operator):
-    """Quantize vertex weights of all selected meshes to a fixed number of steps"""
     bl_idname = "bs.quantize_selected_weights"
     bl_label = "Quantize Selected Weights"
+    bl_description = ("Quantize all vertex groups on selected meshes to a fixed number of discrete weight steps.\n" +
+                      "Meshes with no vertex groups are skipped.")
     bl_options = {'REGISTER', 'UNDO'}
 
     # noinspection PyTypeHints
@@ -42,7 +43,7 @@ class SB_OT_QuantizeVertexWeights(bpy.types.Operator):
                     skipped.append(selected_mesh.name)
                     continue
                 context.view_layer.objects.active = selected_mesh
-                bpy.ops.object.vertex_group_quantize(group_select_mode='ALL', steps=self.steps)
+                bpy.ops.object.vertex_group_quantize(group_select_mode='ALL', steps=self.quantize_steps)
                 processed += 1
         finally:
             # restore prior state
@@ -60,8 +61,7 @@ class SB_OT_QuantizeVertexWeights(bpy.types.Operator):
 def register():
     bpy.types.Scene.bs_quantize_steps = bpy.props.IntProperty(
         name="Steps",
-        description="Discrete steps to quantize into "
-                    "(255 matches 8-bit normalized byte weights)",
+        description="Discrete steps to quantize into (255 matches 8-bit normalized byte weights)",
         default=255,
         min=1,
         max=1024,
@@ -70,7 +70,7 @@ def register():
 
 
 def unregister():
-    del bpy.types.Scene.sb_quantize_steps
+    del bpy.types.Scene.bs_quantize_steps
     bpy.utils.unregister_class(SB_OT_QuantizeVertexWeights)
 
 

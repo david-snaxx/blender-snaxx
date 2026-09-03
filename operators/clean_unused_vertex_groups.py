@@ -5,21 +5,27 @@ from ..utils.getters import (get_selected_mesh_objects,
 class BS_OT_CleanUnusedVertexGroups(bpy.types.Operator):
     bl_idname = "bs.clean_unused_vertex_groups"
     bl_label = "Clean Unused Vertex Groups"
+    bl_description = (
+        "Remove vertex groups from selected meshes that match the enabled criteria.\n"
+        "A group is removed if it fails EITHER enabled criterion, not both."
+        "Enabling both options is not an \"and\" condition."
+    )
     bl_options = {"REGISTER", "UNDO"}
 
     # noinspection PyTypeHints
     remove_unweighted : bpy.props.BoolProperty(
         name = "Unweighted Groups",
-        description = "Remove vertex groups in which no vertex within the group has weight data from all selected "
-                      "mesh objects.",
+        description = "Remove vertex groups with no vertices assigned to them, across all selected "
+                    "mesh objects. A vertex explicitly assigned with a weight of 0.0 still "
+                    "counts as assigned, so that group will not be removed by this option.",
         default = True,
     )
     # noinspection PyTypeHints
     remove_unassigned : bpy.props.BoolProperty(
         name = "Unassigned",
-        description = "Remove vertex groups that are not assigned to any bones from all selected mesh objects. "
-                      "Assigned to bones means the name of the vertex group matches the name of a bone of an attached "
-                      "armature.",
+        description = "Remove vertex groups whose name does not match any bone name on the mesh's "
+                    "armature, across all selected mesh objects. Meshes with no armature are "
+                    "skipped rather than having all their groups removed.",
         default = False,
     )
 
@@ -69,12 +75,16 @@ class BS_OT_CleanUnusedVertexGroups(bpy.types.Operator):
 def register():
     bpy.types.Scene.bs_remove_unweighted = bpy.props.BoolProperty(
         name = "Unweighted",
-        description = "Remove vertex groups with no vertex weights from all selected mesh objects.",
+        description = "Remove vertex groups with no vertices assigned to them, across all selected "
+                    "mesh objects. A vertex explicitly assigned with a weight of 0.0 still "
+                    "counts as assigned, so that group will not be removed by this option.",
         default = True,
     )
     bpy.types.Scene.bs_remove_unassigned = bpy.props.BoolProperty(
         name = "Unassigned",
-        description = "Remove vertex groups that are not assigned to any bones from all selected mesh objects.",
+        description = "Remove vertex groups whose name does not match any bone name on the mesh's "
+                    "armature, across all selected mesh objects. Meshes with no armature are "
+                    "skipped rather than having all their groups removed.",
         default = False,
     )
     bpy.utils.register_class(BS_OT_CleanUnusedVertexGroups)

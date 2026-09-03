@@ -10,12 +10,14 @@ class BS_OT_RenameChildToMatchParent(bpy.types.Operator):
     # noinspection PyTypeHints
     prefix: bpy.props.StringProperty(
         name = "Prefix",
+        description = "Text that will be appended to the start of the new name.",
         default = "",
     )
 
     # noinspection PyTypeHints
     suffix: bpy.props.StringProperty(
         name = "Suffix",
+        description = "Text that will be appended to the end of the new name.",
         default = "",
     )
 
@@ -64,10 +66,12 @@ class BS_OT_RenameChildToMatchParent(bpy.types.Operator):
 def register():
     bpy.types.Scene.bs_prefix = bpy.props.StringProperty(
         name = "Prefix",
+        description="Text that will be appended to the start of the new name.",
         default = "",
     )
     bpy.types.Scene.bs_suffix = bpy.props.StringProperty(
         name = "Suffix",
+        description="Text that will be appended to the end of the new name.",
         default = "",
     )
     bpy.utils.register_class(BS_OT_RenameChildToMatchParent)

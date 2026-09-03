@@ -7,7 +7,8 @@ from ..utils.getters import get_selected_mesh_objects
 class BS_OT_ShiftUVs(bpy.types.Operator):
     bl_idname = "bs.shift_uvs"
     bl_label = "Shift UVs"
-    bl_description = "Shift UVs to the input coordinates"
+    bl_description = ("Moves the UVs of the currently selected meshes by the input x/y amount. Positive x values move "
+                      "up, negative x move down, and the same behavior applies on the y axis.")
     bl_options = {'REGISTER', 'UNDO'}
 
     # noinspection PyTypeHints

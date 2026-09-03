@@ -4,7 +4,8 @@ from ..utils.getters import get_selected_mesh_objects
 class BS_OT_RepositionUVs(bpy.types.Operator):
     bl_idname = "bs.reposition_uvs"
     bl_label = "Reposition UVs"
-    bl_description = "Reposition UVs to the exact UV space tile coordinates"
+    bl_description = ("Repositions the UV maps of the currently selected meshes to the exact x/y coordinates on the UV "
+                      "plane.")
     bl_options = {'REGISTER', 'UNDO'}
 
     # noinspection PyTypeHints
