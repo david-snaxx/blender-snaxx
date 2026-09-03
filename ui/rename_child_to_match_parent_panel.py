@@ -32,7 +32,7 @@ def draw_rename_child_to_match_parent(context, layout, scene):
                 sub.label(text=f"Found {len(valid)} objects:", icon="CHECKMARK")
                 for parent, child in valid.items():
                     row = sub.row()
-                    row.label(text=f"{child.name} ...->... {scene.bs_prefix}{parent.name}{scene.bs_suffix}")
+                    row.label(text=f"{child.name} → {scene.bs_prefix}{parent.name}{scene.bs_suffix}")
 
             if conflicting:
                 sub = preview_panel.box()
@@ -48,5 +48,5 @@ def draw_rename_child_to_match_parent(context, layout, scene):
                         parent_label = "(no parent)"
                     else:
                         parent_label = f"{parent.name}"
-                    entry_text += f" ...share parent... {parent_label}"
+                    entry_text += f" !share parent! → {parent_label}"
                     row.label(text=entry_text)
